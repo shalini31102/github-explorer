@@ -15,9 +15,15 @@ const axios = require('axios');
 /**
  * A pre-configured axios instance for GitHub API calls.
  *
- * baseURL:所有 requests automatically prepend this
- * Authorization: Raises our rate limit from 60 to 5000 req/hour
- * Accept: Tells GitHub we want v3 of their API
+ * baseURL: All requests automatically prepend this URL,
+ * so we never repeat 'https://api.github.com' everywhere.
+ *
+ * Authorization: Attaches our GitHub token to every request.
+ * This raises our rate limit from 60 to 5000 requests/hour.
+ * The token stays server-side — the browser never sees it.
+ * This is exactly why we proxy through the backend!
+ *
+ * Accept: Tells GitHub we want v3 of their API response format.
  */
 const githubClient = axios.create({
   baseURL: 'https://api.github.com',
