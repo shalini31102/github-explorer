@@ -1,0 +1,253 @@
+/* ============================================================
+   RepoCard.module.css
+
+   Styles for individual repository cards.
+   Glassmorphism style with expand/collapse functionality.
+   ============================================================ */
+
+/* Main card container */
+.card {
+  /* Glassmorphism */
+  background: var(--color-glass-bg);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--color-glass-border);
+  border-radius: var(--radius-lg);
+
+  /* Smooth transitions for hover and expand */
+  transition: border-color var(--transition-base),
+              box-shadow var(--transition-base);
+
+  /* Hide overflow so expanded section doesn't leak outside rounded corners */
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.card:hover {
+  border-color: var(--color-glass-border-hover);
+  box-shadow: var(--shadow-md);
+}
+
+/* Inner padding wrapper for the main content */
+.cardBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-5) var(--space-5) var(--space-4);
+}
+
+/* ── TOP ROW ───────────────────────────────────────────────── */
+
+.topRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+/* Repo name — monospace, links to GitHub */
+.repoName {
+  font-family: var(--font-mono);
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  letter-spacing: -0.01em;
+
+  /* Truncate very long repo names */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  transition: color var(--transition-fast);
+}
+
+.repoName:hover {
+  color: var(--color-primary);
+}
+
+/* Expand/collapse chevron button */
+.expandButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  cursor: pointer;
+
+  transition: border-color var(--transition-fast),
+              color var(--transition-fast),
+              background var(--transition-fast);
+}
+
+.expandButton:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-primary-muted);
+}
+
+/* ── DESCRIPTION ───────────────────────────────────────────── */
+
+.description {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  line-height: var(--leading-relaxed);
+
+  /* Clamp to 2 lines */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-clamp: 2;
+  -webkit-line-clamp: 2;
+}
+
+.noDescription {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+/* ── BOTTOM ROW: language + stats ──────────────────────────── */
+
+.bottomRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  margin-top: var(--space-1);
+}
+
+/* Language: colored dot + name */
+.language {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  font-family: var(--font-mono);
+}
+
+/* The colored circle dot */
+.languageDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Star count, fork count */
+.stat {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+}
+
+/* Last updated timestamp */
+.updatedAt {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  margin-left: auto; /* push to the right */
+}
+
+/* ── EXPANDED DETAILS ──────────────────────────────────────── */
+
+/* Outer wrapper — animated height */
+.expandedDetails {
+  overflow: hidden;
+}
+
+/* Inner content with padding and top border */
+.detailsInner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border-top: 1px solid var(--color-border);
+  background: rgba(0, 0, 0, 0.15);
+}
+
+/* Each detail row: label on left, value on right */
+.detailItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.detailLabel {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.detailValue {
+  font-size: var(--text-sm);
+  color: var(--color-text-primary);
+  font-family: var(--font-mono);
+}
+
+/* Branch value with icon */
+.detailBranch {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+  color: var(--color-accent);
+  font-family: var(--font-mono);
+}
+
+/* Topics badges */
+.topicsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  justify-content: flex-end;
+}
+
+.topicBadge {
+  padding: 2px var(--space-2);
+  background: var(--color-primary-muted);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  color: var(--color-primary);
+  font-family: var(--font-mono);
+}
+
+/* View repository button */
+.viewButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  align-self: flex-start;
+  margin-top: var(--space-1);
+  padding: var(--space-2) var(--space-3);
+
+  background: var(--color-primary-muted);
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  border-radius: var(--radius-sm);
+
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  color: var(--color-primary);
+
+  transition: background var(--transition-fast),
+              border-color var(--transition-fast);
+}
+
+.viewButton:hover {
+  background: rgba(99, 102, 241, 0.25);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
