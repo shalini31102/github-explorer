@@ -1,0 +1,203 @@
+/* ============================================================
+   index.css
+   
+   Global styles and CSS custom properties (design tokens).
+   
+   WHY CSS variables?
+   - Change a color in ONE place, updates everywhere
+   - Components reference tokens by name, not raw hex values
+   - Easy to maintain and scale
+   - Named tokens communicate PURPOSE (--color-primary)
+     not just value (#6366f1)
+   ============================================================ */
+
+/* ─── IMPORT FONTS ─────────────────────────────────────────── */
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
+/* ─── DESIGN TOKENS ─────────────────────────────────────────── */
+
+:root {
+  /* --- Colors: Background --- */
+  --color-bg-base:         #0d0d0d;  /* page background */
+  --color-bg-surface:      #111111;  /* slightly lighter surface */
+  --color-bg-elevated:     #1a1a1a;  /* hover states, elevated elements */
+
+  /* --- Colors: Glass Effect --- */
+  --color-glass-bg:        rgba(255, 255, 255, 0.04);
+  --color-glass-bg-hover:  rgba(255, 255, 255, 0.07);
+  --color-glass-border:    rgba(255, 255, 255, 0.08);
+  --color-glass-border-hover: rgba(99, 102, 241, 0.35);
+
+  /* --- Colors: Brand --- */
+  --color-primary:         #6366f1;  /* indigo — main actions */
+  --color-primary-hover:   #4f46e5;  /* darker indigo on hover */
+  --color-primary-muted:   rgba(99, 102, 241, 0.15); /* subtle bg tint */
+  --color-accent:          #22d3ee;  /* cyan — highlights, language dots */
+  --color-accent-muted:    rgba(34, 211, 238, 0.15);
+
+  /* --- Colors: Text --- */
+  --color-text-primary:    #f1f5f9;  /* near white — headings, important */
+  --color-text-secondary:  #94a3b8;  /* muted slate — body, descriptions */
+  --color-text-muted:      #475569;  /* very muted — timestamps, labels */
+
+  /* --- Colors: Semantic --- */
+  --color-error:           #f87171;  /* soft red */
+  --color-error-muted:     rgba(248, 113, 113, 0.15);
+  --color-success:         #34d399;  /* emerald */
+  --color-warning:         #fbbf24;  /* amber */
+
+  /* --- Colors: Border --- */
+  --color-border:          rgba(255, 255, 255, 0.06);
+  --color-border-strong:   rgba(255, 255, 255, 0.12);
+
+  /* --- Typography: Font Families --- */
+  --font-mono:   'JetBrains Mono', 'Fira Code', monospace;
+  --font-sans:   'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* --- Typography: Scale (Major Third — 1.250 ratio) --- */
+  --text-xs:     11px;
+  --text-sm:     13px;
+  --text-base:   15px;
+  --text-lg:     18px;
+  --text-xl:     22px;
+  --text-2xl:    28px;
+  --text-3xl:    36px;
+  --text-4xl:    48px;
+
+  /* --- Typography: Line Heights --- */
+  --leading-tight:   1.2;
+  --leading-snug:    1.375;
+  --leading-normal:  1.5;
+  --leading-relaxed: 1.625;
+
+  /* --- Spacing: 8pt Grid System --- */
+  --space-1:   4px;
+  --space-2:   8px;
+  --space-3:   12px;
+  --space-4:   16px;
+  --space-5:   20px;
+  --space-6:   24px;
+  --space-8:   32px;
+  --space-10:  40px;
+  --space-12:  48px;
+  --space-16:  64px;
+  --space-20:  80px;
+  --space-24:  96px;
+
+  /* --- Border Radius --- */
+  --radius-sm:   6px;
+  --radius-md:   10px;
+  --radius-lg:   14px;
+  --radius-xl:   20px;
+  --radius-full: 9999px;
+
+  /* --- Shadows --- */
+  --shadow-sm:  0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-md:  0 4px 16px rgba(0, 0, 0, 0.4);
+  --shadow-lg:  0 8px 32px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 24px rgba(99, 102, 241, 0.15);
+
+  /* --- Transitions --- */
+  --transition-fast:   150ms ease;
+  --transition-base:   200ms ease;
+  --transition-slow:   300ms ease;
+
+  /* --- Layout --- */
+  --max-width:         1100px;
+  --navbar-height:     60px;
+}
+
+/* ─── RESET & BASE ──────────────────────────────────────────── */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-base);
+  min-height: 100vh;
+
+  /* Subtle dot grid background — technical aesthetic */
+  background-image: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.04) 1px,
+    transparent 1px
+  );
+  background-size: 24px 24px;
+}
+
+/* ─── TYPOGRAPHY UTILITIES ──────────────────────────────────── */
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  line-height: var(--leading-tight);
+  color: var(--color-text-primary);
+}
+
+p {
+  color: var(--color-text-secondary);
+  line-height: var(--leading-relaxed);
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--color-primary-hover);
+}
+
+/* ─── SCROLLBAR ─────────────────────────────────────────────── */
+
+/* Custom scrollbar — keeps the dark aesthetic */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-base);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border-strong);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-muted);
+}
+
+/* ─── SELECTION ─────────────────────────────────────────────── */
+
+::selection {
+  background: var(--color-primary-muted);
+  color: var(--color-text-primary);
+}
+
+/* ─── FOCUS ─────────────────────────────────────────────────── */
+
+/* Accessible focus ring on keyboard navigation */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
