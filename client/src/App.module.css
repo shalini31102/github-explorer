@@ -1,0 +1,243 @@
+/* ============================================================
+   App.module.css
+
+   Layout styles for the root App component.
+   Handles navbar, main content area, and footer.
+   Individual component styles live in their own module files.
+   ============================================================ */
+
+/* ── ROOT LAYOUT ────────────────────────────────────────────── */
+
+/*
+  Full-height flex column layout.
+  navbar at top, main content grows to fill space, footer at bottom.
+*/
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ── NAVBAR ─────────────────────────────────────────────────── */
+
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100; /* stays above content when scrolling */
+  height: var(--navbar-height);
+
+  /* Glassmorphism navbar */
+  background: rgba(13, 13, 13, 0.8);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* Inner container — constrains width and centers content */
+.navInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-6);
+  height: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--space-6);
+}
+
+/* Brand logo */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/*
+  Navbar search — compact version shown after first search.
+  Overrides the hero SearchBar wrapper styles.
+*/
+.navSearch {
+  flex: 1;
+  max-width: 420px;
+}
+
+/*
+  Override SearchBar's hero layout when inside navbar.
+  The SearchBar component has padding and hero text
+  that we don't want inside the navbar.
+*/
+.navSearch :global(.wrapper) {
+  padding: 0;
+  gap: 0;
+}
+
+/* Hide hero title and subtitle inside navbar */
+.navSearch :global(h1),
+.navSearch :global(p) {
+  display: none;
+}
+
+/* ── MAIN CONTENT ───────────────────────────────────────────── */
+
+.main {
+  flex: 1; /* grows to fill space between navbar and footer */
+  padding: var(--space-8) var(--space-6);
+}
+
+/* Width-constrained centered container */
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+/* ── LANDING STATE ──────────────────────────────────────────── */
+
+/* Centers the hero SearchBar vertically on landing */
+.landingWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - var(--navbar-height) - var(--space-16));
+}
+
+/* ── RESULTS STATE ──────────────────────────────────────────── */
+
+/* Profile card + repo list stacked vertically */
+.resultsWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+/* Gap between profile skeleton and repo grid skeleton */
+.skeletonGap {
+  height: var(--space-6);
+}
+
+/* ── ERROR STATE ────────────────────────────────────────────── */
+
+.errorCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: var(--space-12) var(--space-8);
+  text-align: center;
+
+  /* Glassmorphism with error tint */
+  background: var(--color-glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(248, 113, 113, 0.2);
+  border-radius: var(--radius-xl);
+}
+
+.errorIcon {
+  color: var(--color-error);
+  margin-bottom: var(--space-2);
+}
+
+.errorTitle {
+  font-family: var(--font-mono);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.errorMessage {
+  font-size: var(--text-base);
+  color: var(--color-error);
+  font-family: var(--font-mono);
+}
+
+.errorHint {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  margin-top: var(--space-2);
+}
+
+/* ── EMPTY STATE ────────────────────────────────────────────── */
+
+.emptyCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: var(--space-12) var(--space-8);
+  text-align: center;
+
+  background: var(--color-glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--color-glass-border);
+  border-radius: var(--radius-xl);
+}
+
+.emptyIcon {
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-2);
+}
+
+.emptyTitle {
+  font-family: var(--font-mono);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.emptyMessage {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  max-width: 360px;
+}
+
+/* ── FOOTER ─────────────────────────────────────────────────── */
+
+.footer {
+  padding: var(--space-6);
+  border-top: 1px solid var(--color-border);
+  text-align: center;
+}
+
+.footerText {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.footerText a {
+  color: var(--color-primary);
+}
+
+.footerText a:hover {
+  color: var(--color-accent);
+}
+
+/* ── RESPONSIVE ─────────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  .main {
+    padding: var(--space-6) var(--space-4);
+  }
+
+  .navInner {
+    padding: 0 var(--space-4);
+  }
+
+  .navSearch {
+    max-width: 100%;
+  }
+}
