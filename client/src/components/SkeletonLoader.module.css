@@ -1,0 +1,154 @@
+/* ============================================================
+   SkeletonLoader.module.css
+
+   Shimmer animation and skeleton shape styles.
+
+   HOW the shimmer works:
+   1. Each shimmer block has a dark background
+   2. A gradient overlay moves from left to right
+   3. The gradient is lighter in the middle, giving a
+      "light sweeping across" effect
+   4. CSS animation moves the background-position
+   ============================================================ */
+
+/* ── SHIMMER ANIMATION ──────────────────────────────────────── */
+
+@keyframes shimmer {
+  0% {
+    background-position: -600px 0;
+  }
+  100% {
+    background-position: 600px 0;
+  }
+}
+
+/* Base shimmer block — all skeleton elements use this */
+.shimmer {
+  border-radius: var(--radius-sm);
+
+  /*
+    The gradient creates the shimmer effect:
+    - Starts with dark color
+    - Has a lighter band in the middle
+    - Returns to dark color
+    - background-size is wider than the element so the
+      gradient slides through visibly
+  */
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.04) 0%,
+    rgba(255, 255, 255, 0.09) 40%,
+    rgba(255, 255, 255, 0.04) 80%
+  );
+  background-size: 600px 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+/* ── SIZE VARIANTS ──────────────────────────────────────────── */
+
+/* Line heights — all skeleton "text lines" are 12px tall */
+.lineSm   { width: 60px;   height: 12px; }
+.lineMd   { width: 140px;  height: 14px; }
+.lineLg   { width: 200px;  height: 18px; }
+.lineXl   { width: 80%;    height: 12px; }
+.lineFull { width: 100%;   height: 12px; }
+
+/* Circle — for avatar */
+.avatar {
+  width: 88px;
+  height: 88px;
+  border-radius: 50% !important; /* override the default radius-sm */
+  flex-shrink: 0;
+}
+
+/* Small circle — for language dot */
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50% !important;
+  flex-shrink: 0;
+}
+
+/* ── PROFILE SKELETON ───────────────────────────────────────── */
+
+/* Mirrors UserProfile.jsx card layout exactly */
+.profileCard {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: var(--space-6);
+  padding: var(--space-6);
+
+  /* Same glassmorphism as the real card */
+  background: var(--color-glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--color-glass-border);
+  border-radius: var(--radius-xl);
+}
+
+/* Right side info column */
+.profileInfo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  flex: 1;
+}
+
+/* Stats row — three blocks side by side */
+.statsRow {
+  display: flex;
+  gap: var(--space-4);
+  margin-top: var(--space-2);
+}
+
+/* ── REPO SKELETON ──────────────────────────────────────────── */
+
+/* Mirrors RepoCard.jsx card layout exactly */
+.repoCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-5);
+
+  /* Same glassmorphism as the real card */
+  background: var(--color-glass-bg);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--color-glass-border);
+  border-radius: var(--radius-lg);
+}
+
+/* Bottom row: language dot + stats side by side */
+.repoBottom {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+/* ── REPO GRID ──────────────────────────────────────────────── */
+
+/* Mirrors RepoList.jsx grid layout exactly */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-4);
+}
+
+/* ── RESPONSIVE ─────────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profileCard {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .profileInfo {
+    align-items: center;
+  }
+}
