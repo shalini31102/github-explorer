@@ -136,7 +136,7 @@ export function LanguageChart({ repos }) {
       <div className={styles.header}>
         <h3 className={styles.title}>Language Distribution</h3>
         <span className={styles.subtitle}>
-          Based on {repos.length} repositories
+            Based on {repos.length} loaded repositories
         </span>
       </div>
 
