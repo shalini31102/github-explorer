@@ -1,11 +1,5 @@
 /* ============================================================
    SearchBar.module.css
-
-   Styles for the SearchBar component.
-   
-   CSS Modules automatically scopes these class names
-   to this component — no global namespace collisions.
-   e.g. .wrapper becomes something like .wrapper_x7k2p
    ============================================================ */
 
 /* Outer wrapper — centers everything on landing */
@@ -16,6 +10,9 @@
   gap: var(--space-6);
   width: 100%;
   padding: var(--space-20) var(--space-4);
+  /* Prevent content from overflowing */
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 /* Hero heading */
@@ -27,6 +24,8 @@
   line-height: var(--leading-tight);
   text-align: center;
   color: var(--color-text-primary);
+  /* Prevent long words breaking layout */
+  word-break: break-word;
 }
 
 /* "GitHub" word in the hero — cyan accent */
@@ -42,6 +41,10 @@
   text-align: center;
   max-width: 420px;
   line-height: var(--leading-relaxed);
+  /* Prevent subtitle from overflowing */
+  width: 100%;
+  padding: 0 var(--space-2);
+  box-sizing: border-box;
 }
 
 /* The row containing icon + input + button */
@@ -59,12 +62,13 @@
   border: 1px solid var(--color-glass-border);
   border-radius: var(--radius-lg);
 
-  /* Smooth border color transition on focus-within */
+  /* Critical — prevents children from overflowing */
+  overflow: hidden;
+
   transition: border-color var(--transition-base),
               box-shadow var(--transition-base);
 }
 
-/* When anything inside the row is focused */
 .searchRow:focus-within {
   border-color: var(--color-primary);
   box-shadow: 0 0 0 3px var(--color-primary-muted);
@@ -77,12 +81,13 @@
   justify-content: center;
   padding: 0 var(--space-3) 0 var(--space-4);
   color: var(--color-text-muted);
-  flex-shrink: 0; /* never shrink the icon */
+  flex-shrink: 0;
 }
 
 /* Text input */
 .input {
-  flex: 1; /* take all available space between icon and button */
+  flex: 1;
+  min-width: 0; /* allows input to shrink below content size */
   height: 100%;
   background: transparent;
   border: none;
@@ -107,10 +112,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: calc(100% - 8px); /* slight inset from the row */
+  height: calc(100% - 8px);
   min-width: 80px;
   margin-right: 4px;
   padding: 0 var(--space-5);
+
+  /* Never shrink or grow — always stays its set size */
+  flex-shrink: 0;
+  flex-grow: 0;
 
   background: var(--color-primary);
   color: white;
@@ -122,6 +131,7 @@
   font-size: var(--text-sm);
   font-weight: 600;
   letter-spacing: 0.02em;
+  white-space: nowrap;
 
   transition: background var(--transition-fast),
               transform var(--transition-fast),
@@ -165,5 +175,46 @@
 
   .wrapper {
     padding: var(--space-12) var(--space-4);
+    width: 100%;
+  }
+
+  .heroSubtitle {
+    font-size: var(--text-sm);
+  }
+
+  .searchRow {
+    height: 48px;
+    max-width: 100%;
+  }
+
+  .button {
+    min-width: 72px;
+    padding: 0 var(--space-3);
+    font-size: var(--text-xs);
+    margin-right: 3px;
+  }
+
+  .searchIcon {
+    padding: 0 var(--space-2) 0 var(--space-2);
+  }
+}
+
+@media (max-width: 480px) {
+  .heroTitle {
+    font-size: var(--text-xl);
+  }
+
+  .button {
+    min-width: 60px;
+    padding: 0 var(--space-2);
+    margin-right: 3px;
+  }
+
+  .searchIcon {
+    padding: 0 var(--space-1) 0 var(--space-2);
+  }
+
+  .input {
+    font-size: var(--text-xs);
   }
 }

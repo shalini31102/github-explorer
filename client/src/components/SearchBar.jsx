@@ -95,7 +95,7 @@ export function SearchBar({ onSearch, loading, hasError }) {
         <input
           className={styles.input}
           type="text"
-          placeholder="Enter a GitHub username (e.g. torvalds)"
+          placeholder="Enter a GitHub username"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={handleKeyDown}

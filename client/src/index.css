@@ -2,13 +2,6 @@
    index.css
    
    Global styles and CSS custom properties (design tokens).
-   
-   WHY CSS variables?
-   - Change a color in ONE place, updates everywhere
-   - Components reference tokens by name, not raw hex values
-   - Easy to maintain and scale
-   - Named tokens communicate PURPOSE (--color-primary)
-     not just value (#6366f1)
    ============================================================ */
 
 /* ─── IMPORT FONTS ─────────────────────────────────────────── */
@@ -19,9 +12,9 @@
 
 :root {
   /* --- Colors: Background --- */
-  --color-bg-base:         #0d0d0d;  /* page background */
-  --color-bg-surface:      #111111;  /* slightly lighter surface */
-  --color-bg-elevated:     #1a1a1a;  /* hover states, elevated elements */
+  --color-bg-base:         #0d0d0d;
+  --color-bg-surface:      #111111;
+  --color-bg-elevated:     #1a1a1a;
 
   /* --- Colors: Glass Effect --- */
   --color-glass-bg:        rgba(255, 255, 255, 0.04);
@@ -30,22 +23,22 @@
   --color-glass-border-hover: rgba(99, 102, 241, 0.35);
 
   /* --- Colors: Brand --- */
-  --color-primary:         #6366f1;  /* indigo — main actions */
-  --color-primary-hover:   #4f46e5;  /* darker indigo on hover */
-  --color-primary-muted:   rgba(99, 102, 241, 0.15); /* subtle bg tint */
-  --color-accent:          #22d3ee;  /* cyan — highlights, language dots */
+  --color-primary:         #6366f1;
+  --color-primary-hover:   #4f46e5;
+  --color-primary-muted:   rgba(99, 102, 241, 0.15);
+  --color-accent:          #22d3ee;
   --color-accent-muted:    rgba(34, 211, 238, 0.15);
 
   /* --- Colors: Text --- */
-  --color-text-primary:    #f1f5f9;  /* near white — headings, important */
-  --color-text-secondary:  #94a3b8;  /* muted slate — body, descriptions */
-  --color-text-muted:      #475569;  /* very muted — timestamps, labels */
+  --color-text-primary:    #f1f5f9;
+  --color-text-secondary:  #94a3b8;
+  --color-text-muted:      #475569;
 
   /* --- Colors: Semantic --- */
-  --color-error:           #f87171;  /* soft red */
+  --color-error:           #f87171;
   --color-error-muted:     rgba(248, 113, 113, 0.15);
-  --color-success:         #34d399;  /* emerald */
-  --color-warning:         #fbbf24;  /* amber */
+  --color-success:         #34d399;
+  --color-warning:         #fbbf24;
 
   /* --- Colors: Border --- */
   --color-border:          rgba(255, 255, 255, 0.06);
@@ -123,6 +116,8 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  /* Prevent horizontal scroll globally */
+  overflow-x: hidden;
 }
 
 body {
@@ -132,6 +127,8 @@ body {
   color: var(--color-text-primary);
   background-color: var(--color-bg-base);
   min-height: 100vh;
+  /* Prevent horizontal scroll on body */
+  overflow-x: hidden;
 
   /* Subtle dot grid background — technical aesthetic */
   background-image: radial-gradient(
@@ -168,7 +165,6 @@ a:hover {
 
 /* ─── SCROLLBAR ─────────────────────────────────────────────── */
 
-/* Custom scrollbar — keeps the dark aesthetic */
 ::-webkit-scrollbar {
   width: 6px;
 }
@@ -195,7 +191,6 @@ a:hover {
 
 /* ─── FOCUS ─────────────────────────────────────────────────── */
 
-/* Accessible focus ring on keyboard navigation */
 :focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 3px;
