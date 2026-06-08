@@ -23,18 +23,16 @@ import { fetchUserProfile, fetchUserRepos } from '../api/client';
 // ─── STATE SHAPE ──────────────────────────────────────────────
 
 /**
- * This is what our complete application state looks like.
- * Every property is intentional — nothing extra, nothing missing.
- *
  * @typedef {Object} SearchState
- * @property {Object|null}  profile     - GitHub user profile data
- * @property {Array}        repos       - All repos fetched so far
- * @property {boolean}      loading     - True when any fetch is in progress
- * @property {string|null}  error       - Error message to show user
- * @property {number}       currentPage - Which page of repos we're on
- * @property {boolean}      hasMore     - Whether more repo pages exist
- * @property {string}       sortBy      - Current sort: 'stars'|'name'|'updated'
+ * @property {Object|null}  profile          - GitHub user profile data
+ * @property {Array}        repos            - All repos fetched so far
+ * @property {boolean}      loading          - True when any fetch is in progress
+ * @property {string|null}  error            - Error message to show user
+ * @property {number}       currentPage      - Which page of repos we're on
+ * @property {boolean}      hasMore          - Whether more repo pages exist
+ * @property {string}       sortBy           - Current sort: 'stars'|'name'|'updated'
  * @property {string}       searchedUsername - The username currently displayed
+ * @property {string}       filterQuery      - Current repo name filter text
  */
 const initialState = {
   profile: null,
@@ -44,7 +42,8 @@ const initialState = {
   currentPage: 1,
   hasMore: false,
   sortBy: 'stars',
-  searchedUsername: ''
+  searchedUsername: '',
+  filterQuery: ''
 };
 
 // ─── REDUCER ──────────────────────────────────────────────────
@@ -52,9 +51,6 @@ const initialState = {
 /**
  * Pure function that takes current state + action,
  * returns the next state. Never mutates state directly.
- *
- * WHY pure? Same inputs always produce same outputs.
- * This makes bugs easy to track — just log actions.
  *
  * @param {SearchState} state  - Current state
  * @param {Object}      action - { type, payload }
@@ -67,18 +63,18 @@ function searchReducer(state, action) {
      * FETCH_START: User submitted a new search.
      * Reset everything back to a clean slate.
      * We keep sortBy — user's sort preference persists between searches.
+     * We reset filterQuery — filter should clear on new search.
      */
     case 'FETCH_START':
       return {
-        ...initialState,          // reset all fields
-        sortBy: state.sortBy,     // preserve sort preference
-        loading: true,            // show loading UI
+        ...initialState,
+        sortBy: state.sortBy,
+        loading: true,
         searchedUsername: action.payload.username
       };
 
     /**
      * FETCH_SUCCESS: Both profile and first page of repos loaded.
-     * This is the "happy path" — everything worked.
      */
     case 'FETCH_SUCCESS':
       return {
@@ -93,7 +89,6 @@ function searchReducer(state, action) {
 
     /**
      * FETCH_ERROR: Something went wrong (404, rate limit, network).
-     * Clear any stale data and show the error message.
      */
     case 'FETCH_ERROR':
       return {
@@ -107,7 +102,6 @@ function searchReducer(state, action) {
     /**
      * LOAD_MORE_START: User clicked "Load More".
      * Keep existing repos visible while fetching next page.
-     * This is different from FETCH_START which clears everything.
      */
     case 'LOAD_MORE_START':
       return {
@@ -124,7 +118,6 @@ function searchReducer(state, action) {
       return {
         ...state,
         loading: false,
-        // Spread existing repos, then add new ones at the end
         repos: [...state.repos, ...action.payload.repos],
         currentPage: state.currentPage + 1,
         hasMore: action.payload.hasMore
@@ -132,7 +125,7 @@ function searchReducer(state, action) {
 
     /**
      * LOAD_MORE_ERROR: "Load More" fetch failed.
-     * Keep existing repos — don't wipe what user already sees.
+     * Keep existing repos visible.
      */
     case 'LOAD_MORE_ERROR':
       return {
@@ -143,8 +136,6 @@ function searchReducer(state, action) {
 
     /**
      * SET_SORT: User changed sort order.
-     * Just update sortBy — the sorted list is computed
-     * separately via useMemo, not stored in state.
      */
     case 'SET_SORT':
       return {
@@ -152,7 +143,17 @@ function searchReducer(state, action) {
         sortBy: action.payload.sortBy
       };
 
-    // Safety net — unknown actions return state unchanged
+    /**
+     * SET_FILTER: User typed in the repo filter input.
+     * Just updates filterQuery — filtered list is computed
+     * separately via useMemo, not stored in state.
+     */
+    case 'SET_FILTER':
+      return {
+        ...state,
+        filterQuery: action.payload.filterQuery
+      };
+
     default:
       return state;
   }
@@ -160,14 +161,6 @@ function searchReducer(state, action) {
 
 // ─── HOOK ─────────────────────────────────────────────────────
 
-/**
- * useGithubSearch
- *
- * Provides all the state and actions needed to search
- * GitHub users and browse their repositories.
- *
- * @returns {Object} - State values and action functions
- */
 export function useGithubSearch() {
   const [state, dispatch] = useReducer(searchReducer, initialState);
 
@@ -175,30 +168,20 @@ export function useGithubSearch() {
 
   /**
    * searchUser
-   *
-   * Fetches a GitHub user's profile AND their first page
-   * of repos in parallel using Promise.all.
-   *
-   * WHY Promise.all?
-   * Sequential: profile fetch (500ms) + repos fetch (500ms) = 1000ms wait
-   * Parallel:   both fetches together = ~500ms wait
-   * Users feel this difference.
+   * Fetches profile AND first page of repos in parallel.
    *
    * @param {string} username - GitHub username to search
    */
   const searchUser = useCallback(async (username) => {
-    // Don't search if username is empty or just whitespace
     const trimmedUsername = username.trim();
     if (!trimmedUsername) return;
 
-    // Signal to UI: clear everything, show loading state
     dispatch({
       type: 'FETCH_START',
       payload: { username: trimmedUsername }
     });
 
     try {
-      // Fetch profile and repos simultaneously — not one after the other
       const [profileData, reposData] = await Promise.all([
         fetchUserProfile(trimmedUsername),
         fetchUserRepos(trimmedUsername, 1)
@@ -214,31 +197,25 @@ export function useGithubSearch() {
       });
 
     } catch (error) {
-      // error.message was set by our api/client.js catch block
       dispatch({
         type: 'FETCH_ERROR',
         payload: { message: error.message }
       });
     }
-  }, []); // No dependencies — this function never needs to be recreated
+  }, []);
 
   /**
    * loadMore
-   *
-   * Fetches the next page of repos and appends them
-   * to the existing list. Profile is NOT re-fetched.
+   * Fetches the next page of repos and appends to existing list.
    */
   const loadMore = useCallback(async () => {
-    // Safety check — shouldn't be callable if no username or no more pages
     if (!state.searchedUsername || !state.hasMore || state.loading) return;
 
     const nextPage = state.currentPage + 1;
-
     dispatch({ type: 'LOAD_MORE_START' });
 
     try {
       const reposData = await fetchUserRepos(state.searchedUsername, nextPage);
-
       dispatch({
         type: 'LOAD_MORE_SUCCESS',
         payload: {
@@ -246,7 +223,6 @@ export function useGithubSearch() {
           hasMore: reposData.hasMore
         }
       });
-
     } catch (error) {
       dispatch({
         type: 'LOAD_MORE_ERROR',
@@ -257,10 +233,7 @@ export function useGithubSearch() {
 
   /**
    * setSort
-   *
    * Updates the sort preference.
-   * The actual sorting happens in sortedRepos below —
-   * we never re-fetch from the API when sort changes.
    *
    * @param {string} sortBy - 'stars' | 'name' | 'updated'
    */
@@ -271,60 +244,77 @@ export function useGithubSearch() {
     });
   }, []);
 
+  /**
+   * setFilter
+   * Updates the filter query for repo name filtering.
+   * Filtering happens client-side on already-fetched repos.
+   *
+   * @param {string} query - Text to match against repo names
+   */
+  const setFilter = useCallback((query) => {
+    dispatch({
+      type: 'SET_FILTER',
+      payload: { filterQuery: query }
+    });
+  }, []);
+
   // ─── DERIVED STATE ──────────────────────────────────────────
 
   /**
-   * sortedRepos
+   * filteredAndSortedRepos
    *
-   * Computes the sorted repo list from state.repos.
-   * WHY useMemo? Sorting is O(n log n) — we don't want to
-   * re-sort on every render. useMemo only re-sorts when
-   * repos array or sortBy value actually changes.
+   * Step 1: Filter by name if query exists
+   * Step 2: Sort the filtered results
    *
-   * We spread [...state.repos] because .sort() mutates
-   * the original array — we never mutate state directly.
+   * WHY filter before sort?
+   * Sorting a smaller filtered array is faster than
+   * sorting everything then filtering.
+   *
+   * WHY useMemo?
+   * Recomputes only when repos, sortBy, or filterQuery changes.
    */
-  const sortedRepos = useMemo(() => {
-    return [...state.repos].sort((a, b) => {
+  const filteredAndSortedRepos = useMemo(() => {
+    // Step 1: Filter
+    const filtered = state.filterQuery.trim()
+      ? state.repos.filter((repo) =>
+          repo.name
+            .toLowerCase()
+            .includes(state.filterQuery.toLowerCase().trim())
+        )
+      : state.repos;
+
+    // Step 2: Sort
+    return [...filtered].sort((a, b) => {
       switch (state.sortBy) {
         case 'stars':
-          // Highest stars first
           return b.stars - a.stars;
-
         case 'name':
-          // Alphabetical A → Z
           return a.name.localeCompare(b.name);
-
         case 'updated':
-          // Most recently updated first
           return new Date(b.updatedAt) - new Date(a.updatedAt);
-
         default:
           return 0;
       }
     });
-  }, [state.repos, state.sortBy]);
+  }, [state.repos, state.sortBy, state.filterQuery]);
 
   // ─── RETURN ─────────────────────────────────────────────────
 
-  /**
-   * Expose state values and action functions to components.
-   * Components get exactly what they need — nothing internal.
-   * sortedRepos replaces raw repos — components never sort themselves.
-   */
   return {
     // State
     profile: state.profile,
-    repos: sortedRepos,           // pre-sorted, ready to render
+    repos: filteredAndSortedRepos,
     loading: state.loading,
     error: state.error,
     hasMore: state.hasMore,
     sortBy: state.sortBy,
+    filterQuery: state.filterQuery,
     searchedUsername: state.searchedUsername,
 
     // Actions
     searchUser,
     loadMore,
-    setSort
+    setSort,
+    setFilter
   };
 }

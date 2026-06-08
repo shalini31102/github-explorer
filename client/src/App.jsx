@@ -33,10 +33,12 @@ export default function App() {
     error,
     hasMore,
     sortBy,
+    filterQuery,
     searchedUsername,
     searchUser,
     loadMore,
-    setSort
+    setSort,
+    setFilter
   } = useGithubSearch();
 
   // Recent searches hook — reads/writes localStorage
@@ -55,11 +57,13 @@ export default function App() {
   // True only during the very first fetch (no profile yet)
   const isInitialLoading = loading && !profile;
 
-  // True when we have a profile but no repos (and not loading)
-  const hasNoRepos = profile && repos.length === 0 && !loading;
+  // Only show "no repos" empty state when user genuinely has no repos
+  // NOT when filter just returns zero results
+  const hasNoRepos = profile && repos.length === 0 && !loading && !filterQuery;
 
-  // True when we have results to show
-  const hasResults = profile && repos.length > 0;
+  // Show repo list section whenever profile exists and not loading
+  // RepoList handles the empty filter state internally
+  const hasResults = profile && !loading && !hasNoRepos;
 
   /**
    * handleSearch
@@ -253,7 +257,9 @@ export default function App() {
                     hasMore={hasMore}
                     loading={loading}
                     sortBy={sortBy}
+                    filterQuery={filterQuery}
                     onSort={setSort}
+                    onFilter={setFilter}
                     onLoadMore={loadMore}
                     username={searchedUsername}
                   />
