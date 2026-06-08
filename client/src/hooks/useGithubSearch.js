@@ -36,7 +36,7 @@ import { fetchUserProfile, fetchUserRepos } from '../api/client';
  */
 const initialState = {
   profile: null,
-  repos: [],
+  repos: [],        // raw repos from API — never filtered here
   loading: false,
   error: null,
   currentPage: 1,
@@ -263,7 +263,7 @@ export function useGithubSearch() {
   /**
    * filteredAndSortedRepos
    *
-   * Step 1: Filter by name if query exists
+   * Step 1: Filter repos by name if filterQuery exists
    * Step 2: Sort the filtered results
    *
    * WHY filter before sort?
@@ -272,6 +272,10 @@ export function useGithubSearch() {
    *
    * WHY useMemo?
    * Recomputes only when repos, sortBy, or filterQuery changes.
+   *
+   * NOTE: state.repos is the raw unfiltered list.
+   * This derived value is what components see as 'repos'.
+   * 'allRepos' exposes state.repos directly for the chart.
    */
   const filteredAndSortedRepos = useMemo(() => {
     // Step 1: Filter
@@ -303,7 +307,8 @@ export function useGithubSearch() {
   return {
     // State
     profile: state.profile,
-    repos: filteredAndSortedRepos,
+    repos: filteredAndSortedRepos,  // filtered + sorted — for RepoList
+    allRepos: state.repos,          // raw unfiltered repos — for LanguageChart
     loading: state.loading,
     error: state.error,
     hasMore: state.hasMore,

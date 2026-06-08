@@ -30,6 +30,7 @@ export default function App() {
   const {
     profile,
     repos,
+    allRepos,
     loading,
     error,
     hasMore,
@@ -229,7 +230,7 @@ export default function App() {
                 <UserProfile profile={profile} />
 
                 {/* Language distribution chart — shown when repos are loaded */}
-                {repos.length > 0 && (
+                {allRepos.length > 0 && (
                   <LanguageChart repos={repos} />
                 )}
 
