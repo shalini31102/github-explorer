@@ -204,12 +204,17 @@ export default function App() {
                   </svg>
                 </div>
 
-                <h3 className={styles.errorTitle}>Something went wrong</h3>
+                <h3 className={styles.errorTitle}>
+                  {error.includes('not found') ? 'User Not Found' : 'Something went wrong'}
+                </h3>
                 <p className={styles.errorMessage}>{error}</p>
 
                 {/* Retry hint */}
                 <p className={styles.errorHint}>
-                  Try searching for a different username
+                    {error.includes('not found')
+                      ? 'Double-check the username and try again'
+                      : 'Try searching for a different username'
+                    }
                 </p>
               </motion.div>
             )}
