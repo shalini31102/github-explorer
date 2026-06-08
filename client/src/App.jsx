@@ -16,9 +16,11 @@
 
 import { AnimatePresence, motion } from 'framer-motion';
 import { useGithubSearch } from './hooks/useGithubSearch';
+import { useRecentSearches } from './hooks/useRecentSearches';
 import { SearchBar } from './components/SearchBar';
 import { UserProfile } from './components/UserProfile';
 import { RepoList } from './components/RepoList';
+import { RecentSearches } from './components/RecentSearches';
 import { ProfileSkeleton, RepoGridSkeleton } from './components/SkeletonLoader';
 import styles from './App.module.css';
 
@@ -37,6 +39,13 @@ export default function App() {
     setSort
   } = useGithubSearch();
 
+  // Recent searches hook — reads/writes localStorage
+  const {
+    recentSearches,
+    addRecentSearch,
+    clearRecentSearches
+  } = useRecentSearches();
+
   /**
    * Derived booleans for readability.
    * These make the JSX below much easier to read than
@@ -52,12 +61,32 @@ export default function App() {
   // True when we have results to show
   const hasResults = profile && repos.length > 0;
 
+  /**
+   * handleSearch
+   *
+   * Wraps searchUser to also save the username to recent searches.
+   * This is the single place where a search is triggered —
+   * both the SearchBar and RecentSearches chips call this.
+   *
+   * WHY a wrapper function?
+   * We need to do TWO things on every search:
+   * 1. Save to recent searches (localStorage)
+   * 2. Trigger the actual GitHub search (API call)
+   * A wrapper keeps this coordination in one place.
+   */
+  function handleSearch(username) {
+    if (!username?.trim()) return;
+    addRecentSearch(username.trim());
+    searchUser(username.trim());
+  }
+
   return (
     <div className={styles.app}>
 
       {/* ── NAVBAR ───────────────────────────────────────────── */}
       <nav className={styles.navbar}>
         <div className={styles.navInner}>
+
           {/* Logo / Brand — clicking resets to landing */}
           <button
             className={styles.logo}
@@ -80,7 +109,7 @@ export default function App() {
           {(hasResults || error || hasNoRepos || isInitialLoading) && (
             <div className={styles.navSearch}>
               <SearchBar
-                onSearch={searchUser}
+                onSearch={handleSearch}
                 loading={isInitialLoading}
                 hasError={!!error}
               />
@@ -108,10 +137,18 @@ export default function App() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.3 }}
               >
+                {/* Main centered search bar */}
                 <SearchBar
-                  onSearch={searchUser}
+                  onSearch={handleSearch}
                   loading={false}
                   hasError={false}
+                />
+
+                {/* Recently searched chips — only shown on landing */}
+                <RecentSearches
+                  searches={recentSearches}
+                  onSelect={handleSearch}
+                  onClear={clearRecentSearches}
                 />
               </motion.div>
             )}
