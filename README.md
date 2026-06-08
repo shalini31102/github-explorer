@@ -3,9 +3,8 @@
 A full-stack GitHub profile and repository explorer built with React and Node.js. Search any GitHub username to explore their public profile, repositories, language distribution, and more — all proxied through a caching backend.
 
 ## Live Demo
-
-- **Frontend:** https://your-vercel-url.vercel.app
-- **Backend API:** https://your-railway-url.railway.app/health
+- **Frontend:** https://github-explorer-psi-three.vercel.app
+- **Backend API:** https://github-explorer-production-65d4.up.railway.app/health
 
 ---
 
@@ -201,7 +200,7 @@ npm run dev
 
 ## API Documentation
 
-Base URL: `https://your-railway-url.railway.app/api`
+Base URL: `https://github-explorer-production-65d4.up.railway.app/api`
 
 ### GET /github/user/:username
 
@@ -301,6 +300,7 @@ Health check endpoint.
 - Recently searched usernames — persisted in localStorage, max 5
 - Client-side repo filter by name — instant, no API call
 - Language distribution bar chart (Recharts) — updates as more repos load
+- Error boundary — catches unexpected crashes and shows a recovery UI instead of blank screen
 
 ---
 
