@@ -57,6 +57,18 @@
   letter-spacing: -0.02em;
   white-space: nowrap;
   flex-shrink: 0;
+
+ /* Reset button styles */
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+
+  transition: color var(--transition-fast);
+}
+
+.logo:hover {
+  color: var(--color-accent);
 }
 
 /*

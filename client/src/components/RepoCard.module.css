@@ -21,6 +21,8 @@
   /* Hide overflow so expanded section doesn't leak outside rounded corners */
   overflow: hidden;
   cursor: pointer;
+
+  height: fit-content; /* card is only as tall as its content */
 }
 
 .card:hover {
