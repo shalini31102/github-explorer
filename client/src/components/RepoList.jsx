@@ -106,12 +106,9 @@ export function RepoList({
       </div>
 
       {/* ── FILTER RESULTS COUNT ───────────────────────────── */}
-      {filterQuery && (
-        <p className={styles.filterCount}>
-          {repos.length === 0
-            ? `No repositories match "${filterQuery}"`
-            : `Showing ${repos.length} repositor${repos.length === 1 ? 'y' : 'ies'} matching "${filterQuery}"`
-          }
+      {filterQuery && repos.length > 0 && (
+         <p className={styles.filterCount}>
+            {`Showing ${repos.length} repositor${repos.length === 1 ? 'y' : 'ies'} matching "${filterQuery}"`}
         </p>
       )}
 
