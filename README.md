@@ -2,6 +2,18 @@
 
 A full-stack GitHub profile and repository explorer built with React and Node.js. Search any GitHub username to explore their public profile, repositories, language distribution, and more — all proxied through a caching backend.
 
+---
+
+## Exercise
+
+**Exercise 3: GitHub Repository Explorer** 
+
+The app allows users to search any GitHub username and explore their public profile, repositories, and language distribution. All GitHub API requests are proxied through a Node.js backend to enable server-side caching and keep the GitHub personal access token out of the browser.
+
+I chose this exercise because it had the most to learn from — the proxy pattern, server-side caching with TTL, third-party API integration, rate limit handling, and pagination are concepts I wanted to understand deeply, not just implement. Working through each layer of this stack gave me a much clearer mental model of how real full-stack applications are structured.
+
+---
+
 ## Live Demo
 - **Frontend:** https://github-explorer-psi-three.vercel.app
 - **Backend API:** https://github-explorer-production-65d4.up.railway.app/health
@@ -329,7 +341,7 @@ Given more time I would add:
 
 - **Persistent cache** — Redis or SQLite so cache survives server restarts
 - **User GitHub token** — Let users provide their own token for 5000 req/hour
-- **Debounced search** — Search-as-you-type with 500ms debounce
+- **Debounced search** — Search-as-you-type with 500ms debounce. Intentionally skipped because it would burn through GitHub's rate limit quickly even with caching — a search fires on every pause while typing.
 - **Unit tests** — Jest tests for cache module and route handlers
 - **E2E tests** — Playwright for the full search → results → expand flow
 
