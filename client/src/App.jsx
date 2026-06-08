@@ -23,6 +23,7 @@ import { RepoList } from './components/RepoList';
 import { RecentSearches } from './components/RecentSearches';
 import { ProfileSkeleton, RepoGridSkeleton } from './components/SkeletonLoader';
 import styles from './App.module.css';
+import { LanguageChart } from './components/LanguageChart';
 
 export default function App() {
   // Single hook call gives us everything we need
@@ -226,6 +227,12 @@ export default function App() {
               >
                 {/* User profile card — always shown when profile exists */}
                 <UserProfile profile={profile} />
+
+                {/* Language distribution chart — shown when repos are loaded */}
+                {repos.length > 0 && (
+                  <LanguageChart repos={repos} />
+                )}
+
 
                 {/* ── STATE 5: EMPTY REPOS ─────────────────────── */}
                 {hasNoRepos && (
